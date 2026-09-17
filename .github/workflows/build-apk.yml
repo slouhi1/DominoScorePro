@@ -38,22 +38,22 @@ jobs:
           rm -rf project
           mkdir project
           unzip -q DominoScore_Pro_V3_3.zip -d project
-          test -f project/DominoScore_Pro_V3_3/settings.gradle.kts
-          test -f project/DominoScore_Pro_V3_3/app/build.gradle.kts
+          test -f project/DominoScore_FinalBuild/settings.gradle.kts
+          test -f project/DominoScore_FinalBuild/app/build.gradle.kts
           echo "V3.3 project files found"
 
       - name: Build Debug APK
-        working-directory: project/DominoScore_Pro_V3_3
+        working-directory: project/DominoScore_FinalBuild
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
       - name: Verify APK
         run: |
-          test -s project/DominoScore_Pro_V3_3/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh project/DominoScore_Pro_V3_3/app/build/outputs/apk/debug/app-debug.apk
+          test -s project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: DominoScore-V3.3-debug
-          path: project/DominoScore_Pro_V3_3/app/build/outputs/apk/debug/app-debug.apk
+          path: project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error 
