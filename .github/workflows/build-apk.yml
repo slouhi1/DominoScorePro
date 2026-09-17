@@ -19,7 +19,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Install Android SDK packages
+      - name: Install Android SDK
         run: |
           SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           if [ ! -x "$SDKMANAGER" ]; then
@@ -33,23 +33,27 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Check project
+      - name: Extract project
         run: |
-          test -f settings.gradle.kts
-          test -f app/build.gradle.kts
-          echo "Project checks passed"
+          rm -rf project
+          mkdir project
+          unzip -q DominoScore_FinalBuild.zip -d project
+          test -f project/DominoScore_FinalBuild/settings.gradle.kts
+          test -f project/DominoScore_FinalBuild/app/build.gradle.kts
+          echo "Project files found"
 
       - name: Build Debug APK
+        working-directory: project/DominoScore_FinalBuild
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
       - name: Verify APK
         run: |
-          test -s app/build/outputs/apk/debug/app-debug.apk
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
+          test -s project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: DominoScore-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: project/DominoScore_FinalBuild/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
